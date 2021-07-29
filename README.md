@@ -131,7 +131,8 @@ makeTransformable('.box', (element, H) ->
     console.assert((from.length === (ref = to.length) && ref === 4));
     A = []; // 8x8
     for (i = k = 0; k < 4; i = ++k) {
-      A.push([from[i].x, from[i].y, 1, 0, 0, 0, -from[i].x * to[i].x, -from[i].y * to[i].x]);
+      A.push([
+        from[i].x, from[i].y, 1, 0, 0, 0, -from[i].x * to[i].x, -from[i].y * to[i].x]);
       A.push([0, 0, 0, from[i].x, from[i].y, 1, -from[i].x * to[i].y, -from[i].y * to[i].y]);
     }
     b = []; // 8x1

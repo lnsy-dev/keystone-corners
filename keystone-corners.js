@@ -3,24 +3,23 @@
 
 class KeyStoneCorners extends HTMLElement {
   connectedCallback(){
-    this.style.position = 'absolute'
-    this.style.display = 'block'
+    setTimeout(() =>{
     const upper_left_corner = document.createElement('keystone-corner')
-    upper_left_corner.style.left = '0px'
-    upper_left_corner.style.top = '0px'
+    upper_left_corner.style.left = this.offsetLeft +'px'
+    upper_left_corner.style.top = this.offsetTop + 'px'
     const upper_right_corner = document.createElement('keystone-corner')
-    upper_right_corner.style.right = '0px'
-    upper_right_corner.style.top = '0px'
+    upper_right_corner.style.left = this.offsetLeft + this.offsetWidth + 'px'
+    upper_right_corner.style.top = this.offsetTop + 'px'
     const lower_left_corner = document.createElement('keystone-corner')
-    lower_left_corner.style.left = '0px'
-    lower_left_corner.style.bottom = '0px'
+    lower_left_corner.style.left = this.offsetLeft + 'px'
+    lower_left_corner.style.top = this.offsetTop + this.offsetHeight  + 'px'
     const lower_right_corner = document.createElement('keystone-corner')
-    lower_right_corner.style.right = '0px'
-    lower_right_corner.style.bottom = this.offsetTop + '0px'
+    lower_right_corner.style.left = this.offsetLeft + this.offsetWidth + 'px'
+    lower_right_corner.style.top = this.offsetTop + this.offsetHeight + 'px'
     document.body.appendChild(upper_left_corner)
-    this.appendChild(upper_right_corner)
-    this.appendChild(lower_left_corner)
-    this.appendChild(lower_right_corner)
+    document.body.appendChild(upper_right_corner)
+    document.body.appendChild(lower_left_corner)
+    document.body.appendChild(lower_right_corner)
 
     this.original_position = [[0,0],[0,0],[0,0],[0,0]]
     this.target_position = [...this.original_position]
@@ -47,9 +46,6 @@ class KeyStoneCorners extends HTMLElement {
 
     })
 
-
-
-
     upper_left_corner.addEventListener('set-corner', (e) => {
       this.target_position[0] = e.detail
       this.setMatrix()
@@ -68,6 +64,8 @@ class KeyStoneCorners extends HTMLElement {
       this.target_position[3] = e.detail
       this.setMatrix()
     })
+
+    },100)
   }
 
   setMatrix(){
@@ -121,9 +119,6 @@ class KeyStoneCorners extends HTMLElement {
         return _results;
       })()).join(',')) + ")"
 
-
-    console.log(H, this.style.transform)
-
   }
 
 }
@@ -160,9 +155,7 @@ customElements.define('keystone-corner', KeystoneCorner)
 
 
 function getTransform(from, to){
-  console.log(from, to)
   var A, H, b, h, i, k, k_i, l, lhs, m, ref, rhs;
-  console.assert((from.length === (ref = to.length) && ref === 4));
   A = []; // 8x8
   for (i = k = 0; k < 4; i = ++k) {
     A.push([
@@ -177,13 +170,6 @@ function getTransform(from, to){
   // Solve A * h = b for h
   h = numeric.solve(A, b);
   H = [[h[0], h[1], 0, h[2]], [h[3], h[4], 0, h[5]], [0, 0, 1, 0], [h[6], h[7], 0, 1]];
-// Sanity check that H actually maps `from` to `to`
-  for (i = m = 0; m < 4; i = ++m) {
-    lhs = numeric.dot(H, [from[i].x, from[i].y, 0, 1]);
-    k_i = lhs[3];
-    rhs = numeric.dot(k_i, [to[i].x, to[i].y, 0, 1]);
-    console.assert(numeric.norm2(numeric.sub(lhs, rhs)) < 1e-9, "Not equal:", lhs, rhs);
-  }
 
   return H;
 
