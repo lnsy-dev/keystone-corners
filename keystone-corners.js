@@ -174,5 +174,3 @@ function getTransform(from, to){
   return H;
 
 }
-
-document.body.innerHTML += `<keystone-corner draggable="true" style="left: 8px; top: 8px;">+</keystone-corner><keystone-corner draggable="true" style="left: 308px; top: 8px;">+</keystone-corner><keystone-corner draggable="true" style="left: 8px; top: 162px;">+</keystone-corner><keystone-corner draggable="true" style="left: 308px; top: 162px;">+</keystone-corner>`
