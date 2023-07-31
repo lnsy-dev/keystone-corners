@@ -4,66 +4,67 @@
 class KeyStoneCorners extends HTMLElement {
   connectedCallback(){
     setTimeout(() =>{
-    const upper_left_corner = document.createElement('keystone-corner')
-    upper_left_corner.style.left = this.offsetLeft +'px'
-    upper_left_corner.style.top = this.offsetTop + 'px'
-    const upper_right_corner = document.createElement('keystone-corner')
-    upper_right_corner.style.left = this.offsetLeft + this.offsetWidth + 'px'
-    upper_right_corner.style.top = this.offsetTop + 'px'
-    const lower_left_corner = document.createElement('keystone-corner')
-    lower_left_corner.style.left = this.offsetLeft + 'px'
-    lower_left_corner.style.top = this.offsetTop + this.offsetHeight  + 'px'
-    const lower_right_corner = document.createElement('keystone-corner')
-    lower_right_corner.style.left = this.offsetLeft + this.offsetWidth + 'px'
-    lower_right_corner.style.top = this.offsetTop + this.offsetHeight + 'px'
-    document.body.appendChild(upper_left_corner)
-    document.body.appendChild(upper_right_corner)
-    document.body.appendChild(lower_left_corner)
-    document.body.appendChild(lower_right_corner)
+      const upper_left_corner = document.createElement('keystone-corner')
+      upper_left_corner.style.left = this.offsetLeft +'px'
+      upper_left_corner.style.top = this.offsetTop + 'px'
+      const upper_right_corner = document.createElement('keystone-corner')
+      upper_right_corner.style.left = this.offsetLeft + this.offsetWidth + 'px'
+      upper_right_corner.style.top = this.offsetTop + 'px'
+      const lower_left_corner = document.createElement('keystone-corner')
+      lower_left_corner.style.left = this.offsetLeft + 'px'
+      lower_left_corner.style.top = this.offsetTop + this.offsetHeight  + 'px'
+      const lower_right_corner = document.createElement('keystone-corner')
+      lower_right_corner.style.left = this.offsetLeft + this.offsetWidth + 'px'
+      lower_right_corner.style.top = this.offsetTop + this.offsetHeight + 'px'
+      document.body.appendChild(upper_left_corner)
+      document.body.appendChild(upper_right_corner)
+      document.body.appendChild(lower_left_corner)
+      document.body.appendChild(lower_right_corner)
 
-    this.original_position = [[0,0],[0,0],[0,0],[0,0]]
-    this.target_position = [...this.original_position]
+      this.original_position = [[0,0],[0,0],[0,0],[0,0]]
+      this.target_position = [...this.original_position]
 
-    upper_left_corner.addEventListener('init-corner', (e) => {
-      this.original_position[0] = e.detail
-      this.target_position[0] = e.detail
-    })
+      upper_left_corner.addEventListener('init-corner', (e) => {
+        this.original_position[0] = e.detail
+        this.target_position[0] = e.detail
+      })
 
-    lower_left_corner.addEventListener('init-corner', (e) => {
-      this.original_position[1] = e.detail
-      this.target_position[1] = e.detail
+      lower_left_corner.addEventListener('init-corner', (e) => {
+        this.original_position[1] = e.detail
+        this.target_position[1] = e.detail
 
-    })
+      })
 
-    upper_right_corner.addEventListener('init-corner', (e) => {
-      this.original_position[2] = e.detail
-      this.target_position[2] = e.detail
+      upper_right_corner.addEventListener('init-corner', (e) => {
+        this.original_position[2] = e.detail
+        this.target_position[2] = e.detail
 
-    })
-    lower_right_corner.addEventListener('init-corner', (e) => {
-      this.original_position[3] = e.detail
-      this.target_position[3] = e.detail
+      })
+      lower_right_corner.addEventListener('init-corner', (e) => {
+        this.original_position[3] = e.detail
+        this.target_position[3] = e.detail
 
-    })
+      })
 
-    upper_left_corner.addEventListener('set-corner', (e) => {
-      this.target_position[0] = e.detail
-      this.setMatrix()
-    })
+      upper_left_corner.addEventListener('set-corner', (e) => {
+        this.target_position[0] = e.detail
+        this.setMatrix()
+      })
 
-    lower_left_corner.addEventListener('set-corner', (e) => {
-      this.target_position[1] = e.detail
-      this.setMatrix()
-    })
+      lower_left_corner.addEventListener('set-corner', (e) => {
+        this.target_position[1] = e.detail
+        this.setMatrix()
+      })
 
-    upper_right_corner.addEventListener('set-corner', (e) => {
-      this.target_position[2] = e.detail
-      this.setMatrix()
-    })
-    lower_right_corner.addEventListener('set-corner', (e) => {
-      this.target_position[3] = e.detail
-      this.setMatrix()
-    })
+      upper_right_corner.addEventListener('set-corner', (e) => {
+        this.target_position[2] = e.detail
+        this.setMatrix()
+      })
+      lower_right_corner.addEventListener('set-corner', (e) => {
+        if(e.detail[0] === 0 && e.detail[1] === 0) return
+        this.target_position[3] = e.detail
+        this.setMatrix()
+      })
 
     },100)
   }
@@ -121,6 +122,7 @@ class KeyStoneCorners extends HTMLElement {
 
   }
 
+
 }
 
 customElements.define('keystone-corners', KeyStoneCorners)
@@ -138,12 +140,21 @@ class KeystoneCorner extends HTMLElement {
     }, 1000)
 
     this.setAttribute('draggable', true)
-    this.addEventListener('dragend', (e) => {
+    this.addEventListener('drag', (e) => {
       this.style.left = e.clientX + 'px'
       this.style.top = e.clientY + 'px'
       const end_drag_event = new CustomEvent('set-corner', {detail: [e.clientX, e.clientY]})
       this.dispatchEvent(end_drag_event)
     })
+
+    this.addEventListener('dragend', (e) => {
+      console.log(e.clientX, e.clientY, "Drag end");
+      this.style.left = e.clientX + 'px'
+      this.style.top = e.clientY + 'px'
+      const end_drag_event = new CustomEvent('set-corner', {detail: [e.clientX, e.clientY]})
+      this.dispatchEvent(end_drag_event)
+    })
+
   }
 
 }
