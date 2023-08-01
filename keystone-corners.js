@@ -1,9 +1,13 @@
 
 
+import 'https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js';
+
+
 
 class KeyStoneCorners extends HTMLElement {
   connectedCallback(){
     setTimeout(() =>{
+      this.style.userSelect = 'none';
       const upper_left_corner = document.createElement('keystone-corner')
       upper_left_corner.style.left = this.offsetLeft +'px'
       upper_left_corner.style.top = this.offsetTop + 'px'
@@ -32,19 +36,16 @@ class KeyStoneCorners extends HTMLElement {
       lower_left_corner.addEventListener('init-corner', (e) => {
         this.original_position[1] = e.detail
         this.target_position[1] = e.detail
-
       })
 
       upper_right_corner.addEventListener('init-corner', (e) => {
         this.original_position[2] = e.detail
         this.target_position[2] = e.detail
-
-      })
+      });
       lower_right_corner.addEventListener('init-corner', (e) => {
         this.original_position[3] = e.detail
         this.target_position[3] = e.detail
-
-      })
+      });
 
       upper_left_corner.addEventListener('set-corner', (e) => {
         this.target_position[0] = e.detail
@@ -139,20 +140,21 @@ class KeystoneCorner extends HTMLElement {
       this.dispatchEvent(init_event)
     }, 1000)
 
-    this.setAttribute('draggable', true)
-    this.addEventListener('drag', (e) => {
-      this.style.left = e.clientX + 'px'
-      this.style.top = e.clientY + 'px'
-      const end_drag_event = new CustomEvent('set-corner', {detail: [e.clientX, e.clientY]})
-      this.dispatchEvent(end_drag_event)
-    })
-
-    this.addEventListener('dragend', (e) => {
-      console.log(e.clientX, e.clientY, "Drag end");
-      this.style.left = e.clientX + 'px'
-      this.style.top = e.clientY + 'px'
-      const end_drag_event = new CustomEvent('set-corner', {detail: [e.clientX, e.clientY]})
-      this.dispatchEvent(end_drag_event)
+    interact(this).draggable({
+      listeners: {
+        move: (e) => {
+          this.style.left = e.pageX + 'px'
+          this.style.top = e.pageY + 'px'
+          const end_drag_event = new CustomEvent('set-corner', {detail: [e.pageX, e.pageY]})
+          this.dispatchEvent(end_drag_event)
+        },
+        end: (e) => {
+          this.style.left = e.pageX + 'px'
+          this.style.top = e.pageY + 'px'
+          const end_drag_event = new CustomEvent('set-corner', {detail: [e.pageX, e.pageY]})
+          this.dispatchEvent(end_drag_event)
+        }
+      }
     })
 
   }
